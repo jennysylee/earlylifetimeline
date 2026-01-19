@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Early Life Timeline - Reflective Learning Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --slate-900: #0f172a;
+            --slate-700: #334155;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-50: #f8fafc;
+            --teal-500: #14b8a6;
+            --teal-400: #2dd4bf;
+            --amber-500: #f59e0b;
+            --emerald-500: #10b981;
+            --sky-500: #0ea5e9;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--slate-50);
+            color: var(--slate-900);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--slate-300);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--slate-600);
+            font-size: 14px;
+            max-width: 700px;
+        }
+
+        /* Main Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 24px;
+        }
+
+        /* Timeline Section (30%) */
+        .timeline-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--slate-300);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .timeline-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .timeline-container {
+            display: flex;
+            gap: 8px;
+            height: 120px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--slate-100);
+            padding: 4px;
+        }
+
+        .timeline-period {
+            flex: 1;
+            background: white;
+            border: 2px solid var(--slate-300);
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .timeline-period:hover {
+            border-color: var(--teal-500);
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.02), rgba(20, 184, 166, 0.05));
+        }
+
+        .timeline-period.focused {
+            border-color: var(--teal-500);
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(20, 184, 166, 0.15));
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+        }
+
+        .period-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-700);
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .period-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--teal-500);
+            line-height: 1;
+        }
+
+        .period-subtext {
+            font-size: 10px;
+            color: var(--slate-400);
+            margin-top: 2px;
+        }
+
+        .timeline-resizer {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+        }
+
+        .timeline-resizer label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--slate-600);
+        }
+
+        .reset-button, .clear-button {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid var(--slate-300);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--slate-700);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reset-button:hover, .clear-button:hover {
+            background: var(--slate-100);
+            border-color: var(--slate-400);
+        }
+
+        /* Library Panel (40%) */
+        .library-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--slate-300);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--slate-200);
+        }
+
+        .tab {
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--slate-500);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--slate-700);
+        }
+
+        .tab.active {
+            color: var(--teal-500);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--teal-500);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .library-item {
+            background: var(--slate-50);
+            border: 2px solid var(--slate-300);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: grab;
+            transition: all 0.2s;
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.4;
+            position: relative;
+            user-select: none;
+        }
+
+        .library-item:hover {
+            border-color: var(--teal-500);
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.05), rgba(20, 184, 166, 0.08));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+
+        .library-item.dragging {
+            opacity: 0.6;
+            cursor: grabbing;
+        }
+
+        .library-item:active {
+            cursor: grabbing;
+        }
+
+        /* Drop Zones */
+        .drop-zone {
+            background: var(--slate-50);
+            border: 2px dashed var(--slate-300);
+            border-radius: 8px;
+            padding: 16px;
+            min-height: 80px;
+            margin-top: 12px;
+            transition: all 0.2s;
+            font-size: 13px;
+            color: var(--slate-500);
+        }
+
+        .drop-zone.active {
+            border-color: var(--teal-500);
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.03), rgba(20, 184, 166, 0.08));
+        }
+
+        .dropped-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .dropped-item {
+            background: white;
+            border: 1px solid var(--teal-300);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropped-item-label {
+            flex: 1;
+            color: var(--slate-700);
+            font-weight: 500;
+        }
+
+        .dropped-item-remove {
+            background: transparent;
+            border: none;
+            color: var(--slate-400);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .dropped-item-remove:hover {
+            background: var(--slate-100);
+            color: var(--slate-600);
+        }
+
+        /* Reflection Summary (30%) */
+        .reflection-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--slate-300);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .reflection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .reflection-card {
+            background: var(--slate-50);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--teal-500);
+        }
+
+        .reflection-card-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .reflection-card-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+
+        .reflection-card-detail {
+            font-size: 12px;
+            color: var(--slate-500);
+        }
+
+        .notes-section {
+            margin-top: 12px;
+        }
+
+        .notes-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--slate-300);
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--teal-500);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+        }
+
+        /* Instructions */
+        .instructions {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(20, 184, 166, 0.08));
+            border-left: 4px solid var(--sky-500);
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--slate-700);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .instructions strong {
+            color: var(--slate-900);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--slate-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--slate-300);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--slate-400);
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                gap: 16px;
+            }
+
+            .header {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .timeline-container {
+                height: 100px;
+            }
+
+            .library-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .reflection-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Early Life Timeline Explorer</h1>
+            <p><strong>Purpose of This Activity:</strong> This tool helps you explore patterns from earlier life that may still influence you today. There are no right or wrong answers. You are in control of what you place — and what you leave out.</p>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard">
+            <!-- Timeline Section -->
+            <div class="timeline-section">
+                <div class="timeline-label">Developmental Periods</div>
+                <div class="timeline-container">
+                    <div class="timeline-period" data-period="early_childhood">
+                        <div class="period-label">Early Childhood</div>
+                        <div class="period-count">0</div>
+                        <div class="period-subtext">0–6 years</div>
+                    </div>
+                    <div class="timeline-period" data-period="primary_school">
+                        <div class="period-label">Primary School</div>
+                        <div class="period-count">0</div>
+                        <div class="period-subtext">6–12 years</div>
+                    </div>
+                    <div class="timeline-period" data-period="adolescence">
+                        <div class="period-label">Adolescence</div>
+                        <div class="period-count">0</div>
+                        <div class="period-subtext">12–18 years</div>
+                    </div>
+                </div>
+                <div class="timeline-resizer">
+                    <button class="reset-button" id="resetTimeline">Reset Timeline</button>
+                    <button class="clear-button" id="clearAll">Clear All Data</button>
+                </div>
+            </div>
+
+            <!-- Library & Drop Zones -->
+            <div class="library-section">
+                <div class="instructions">
+                    <strong>How to use:</strong> Select experiences or messages from the tabs below, then drag them to any period above. Items can be duplicated across periods or removed anytime. You control the process.
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="experiences">Repeated Experiences</button>
+                    <button class="tab" data-tab="messages">Internal Messages</button>
+                </div>
+
+                <!-- Tab Content: Experiences -->
+                <div class="tab-content active" id="experiences">
+                    <div class="library-label" style="font-size: 12px; color: var(--slate-600); margin-bottom: 12px;">Drag items to place them in time periods above</div>
+                    <div class="library-grid" id="experienceLibrary"></div>
+                </div>
+
+                <!-- Tab Content: Messages -->
+                <div class="tab-content" id="messages">
+                    <div class="library-label" style="font-size: 12px; color: var(--slate-600); margin-bottom: 12px;">Messages are meanings we learned — not facts about who we are.</div>
+                    <div class="library-grid" id="messageLibrary"></div>
+                </div>
+
+                <!-- Drop Zones for Each Period -->
+                <div style="margin-top: 24px;">
+                    <div style="font-size: 12px; font-weight: 600; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Items by Period</div>
+                    
+                    <div id="early_childhood_zone" class="drop-zone" data-period="early_childhood">
+                        <div style="margin-bottom: 8px; color: var(--slate-600); font-weight: 600;">Early Childhood (0–6)</div>
+                        <div class="dropped-items"></div>
+                    </div>
+
+                    <div id="primary_school_zone" class="drop-zone" data-period="primary_school" style="margin-top: 12px;">
+                        <div style="margin-bottom: 8px; color: var(--slate-600); font-weight: 600;">Primary School (6–12)</div>
+                        <div class="dropped-items"></div>
+                    </div>
+
+                    <div id="adolescence_zone" class="drop-zone" data-period="adolescence" style="margin-top: 12px;">
+                        <div style="margin-bottom: 8px; color: var(--slate-600); font-weight: 600;">Adolescence (12–18)</div>
+                        <div class="dropped-items"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reflection Summary -->
+            <div class="reflection-section">
+                <div style="font-size: 12px; font-weight: 600; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Reflection Summary</div>
+                
+                <div class="reflection-grid">
+                    <div class="reflection-card">
+                        <div class="reflection-card-label">Most Populated Period</div>
+                        <div class="reflection-card-value" id="mostPopulated">—</div>
+                        <div class="reflection-card-detail" id="mostPopulatedCount"></div>
+                    </div>
+                    <div class="reflection-card">
+                        <div class="reflection-card-label">Total Items Placed</div>
+                        <div class="reflection-card-value" id="totalItems">0</div>
+                        <div class="reflection-card-detail">experiences & messages</div>
+                    </div>
+                    <div class="reflection-card">
+                        <div class="reflection-card-label">Most Common Message Theme</div>
+                        <div class="reflection-card-value" id="commonMessage">—</div>
+                        <div class="reflection-card-detail" id="commonMessageDetail"></div>
+                    </div>
+                </div>
+
+                <div class="notes-section">
+                    <label class="notes-label">Personal Reflection Notes (Optional)</label>
+                    <textarea class="notes-textarea" id="reflectionNotes" placeholder="Use this space to capture any patterns you notice, connections you make, or insights that emerge as you work with this timeline..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Models
+        const experiences = [
+            "Being praised for good behavior",
+            "Being criticized for mistakes",
+            "Being expected to help others",
+            "Being told to 'be mature'",
+            "Being rewarded for achievement",
+            "Being ignored when upset",
+            "Being encouraged to be independent",
+            "Being compared to others",
+            "Being relied on emotionally",
+            "Being told not to complain",
+            "Being protected from failure",
+            "Being expected to perform well",
+            "Being discouraged from expressing anger",
+            "Being encouraged to keep peace",
+            "Being noticed mainly for success",
+            "Being responsible for siblings",
+            "Being comforted when distressed",
+            "Being corrected frequently",
+            "Being praised for self-control",
+            "Being expected to adapt quickly"
+        ];
+
+        const messages = [
+            "I need to be good to be accepted.",
+            "My needs are less important.",
+            "I should not cause trouble.",
+            "I am valued when I perform well.",
+            "Being helpful keeps me connected.",
+            "Mistakes lead to criticism.",
+            "I should handle things on my own.",
+            "It's safer not to speak up.",
+            "I must meet expectations.",
+            "I need to stay in control.",
+            "I should not rely on others.",
+            "Approval comes from achievement.",
+            "Emotions should be hidden.",
+            "I need to be strong.",
+            "I am responsible for others' feelings.",
+            "Love must be earned.",
+            "Being quiet keeps me safe.",
+            "I should not need too much.",
+            "Success prevents rejection.",
+            "I belong when I adapt."
+        ];
+
+        // State
+        let state = {
+            early_childhood: { experiences: [], messages: [] },
+            primary_school: { experiences: [], messages: [] },
+            adolescence: { experiences: [], messages: [] },
+            reflectionNotes: ""
+        };
+
+        // Initialize UI
+        function initializeLibraries() {
+            const expLibrary = document.getElementById('experienceLibrary');
+            const msgLibrary = document.getElementById('messageLibrary');
+
+            experiences.forEach((exp, idx) => {
+                const item = document.createElement('div');
+                item.className = 'library-item';
+                item.draggable = true;
+                item.textContent = exp;
+                item.dataset.type = 'experience';
+                item.dataset.id = `exp-${idx}`;
+                item.dataset.label = exp;
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+                expLibrary.appendChild(item);
+            });
+
+            messages.forEach((msg, idx) => {
+                const item = document.createElement('div');
+                item.className = 'library-item';
+                item.draggable = true;
+                item.textContent = msg;
+                item.dataset.type = 'message';
+                item.dataset.id = `msg-${idx}`;
+                item.dataset.label = msg;
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+                msgLibrary.appendChild(item);
+            });
+        }
+
+        // Drag & Drop
+        let draggedItem = null;
+
+        function handleDragStart(e) {
+            draggedItem = {
+                type: this.dataset.type,
+                id: this.dataset.id,
+                label: this.dataset.label
+            };
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'copy';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function setupDropZones() {
+            const dropZones = document.querySelectorAll('.drop-zone');
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('active');
+                    e.dataTransfer.dropEffect = 'copy';
+                });
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('active');
+                });
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('active');
+                    
+                    if (draggedItem) {
+                        const period = zone.dataset.period;
+                        addItemToPeriod(period, draggedItem);
+                    }
+                });
+            });
+        }
+
+        function setupTimelinePeriods() {
+            const periods = document.querySelectorAll('.timeline-period');
+            periods.forEach(period => {
+                period.addEventListener('click', () => {
+                    periods.forEach(p => p.classList.remove('focused'));
+                    period.classList.add('focused');
+                });
+            });
+        }
+
+        function addItemToPeriod(period, item) {
+            const key = item.type === 'experience' ? 'experiences' : 'messages';
+            state[period][key].push(item);
+            
+            const zone = document.getElementById(`${period}_zone`);
+            const itemsContainer = zone.querySelector('.dropped-items');
+            
+            const itemEl = document.createElement('div');
+            itemEl.className = 'dropped-item';
+            itemEl.innerHTML = `
+                <div class="dropped-item-label">${item.label}</div>
+                <button class="dropped-item-remove" data-period="${period}" data-type="${key}" data-id="${item.id}">×</button>
+            `;
+            
+            itemsContainer.appendChild(itemEl);
+            
+            itemEl.querySelector('.dropped-item-remove').addEventListener('click', (e) => {
+                removeItem(period, key, item.id);
+                itemEl.remove();
+            });
+            
+            updateSummary();
+        }
+
+        function removeItem(period, key, id) {
+            state[period][key] = state[period][key].filter(item => item.id !== id);
+            updateSummary();
+        }
+
+        function updateSummary() {
+            updateTimelineCounts();
+            updateReflectionSummary();
+        }
+
+        function updateTimelineCounts() {
+            ['early_childhood', 'primary_school', 'adolescence'].forEach(period => {
+                const count = state[period].experiences.length + state[period].messages.length;
+                const periodEl = document.querySelector(`[data-period="${period}"]`);
+                if (periodEl) {
+                    periodEl.querySelector('.period-count').textContent = count;
+                }
+            });
+        }
+
+        function updateReflectionSummary() {
+            // Total items
+            let total = 0;
+            let mostPopulated = '';
+            let maxCount = 0;
+
+            ['early_childhood', 'primary_school', 'adolescence'].forEach(period => {
+                const count = state[period].experiences.length + state[period].messages.length;
+                total += count;
+                if (count > maxCount) {
+                    maxCount = count;
+                    mostPopulated = period.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+            });
+
+            document.getElementById('totalItems').textContent = total;
+            document.getElementById('mostPopulated').textContent = mostPopulated || '—';
+            if (maxCount > 0) {
+                document.getElementById('mostPopulatedCount').textContent = `${maxCount} items`;
+            } else {
+                document.getElementById('mostPopulatedCount').textContent = '';
+            }
+
+            // Most common message (check which appears most)
+            const allMessages = [];
+            ['early_childhood', 'primary_school', 'adolescence'].forEach(period => {
+                state[period].messages.forEach(msg => {
+                    allMessages.push(msg.label);
+                });
+            });
+
+            if (allMessages.length > 0) {
+                const frequency = {};
+                allMessages.forEach(msg => {
+                    frequency[msg] = (frequency[msg] || 0) + 1;
+                });
+                const mostCommon = Object.keys(frequency).reduce((a, b) => 
+                    frequency[a] > frequency[b] ? a : b
+                );
+                document.getElementById('commonMessage').textContent = mostCommon.substring(0, 30) + (mostCommon.length > 30 ? '...' : '');
+                document.getElementById('commonMessageDetail').textContent = `appears ${frequency[mostCommon]} time(s)`;
+            } else {
+                document.getElementById('commonMessage').textContent = '—';
+                document.getElementById('commonMessageDetail').textContent = '';
+            }
+        }
+
+        // Tab switching
+        function setupTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                });
+            });
+        }
+
+        // Reset & Clear
+        function setupControls() {
+            document.getElementById('resetTimeline').addEventListener('click', () => {
+                const zones = document.querySelectorAll('.drop-zone .dropped-items');
+                zones.forEach(zone => zone.innerHTML = '');
+                state = {
+                    early_childhood: { experiences: [], messages: [] },
+                    primary_school: { experiences: [], messages: [] },
+                    adolescence: { experiences: [], messages: [] },
+                    reflectionNotes: ""
+                };
+                updateSummary();
+            });
+
+            document.getElementById('clearAll').addEventListener('click', () => {
+                if (confirm('Are you sure? This will clear all data and cannot be undone.')) {
+                    document.getElementById('resetTimeline').click();
+                    document.getElementById('reflectionNotes').value = '';
+                }
+            });
+
+            document.getElementById('reflectionNotes').addEventListener('change', (e) => {
+                state.reflectionNotes = e.target.value;
+            });
+        }
+
+        // Initialize
+        function init() {
+            initializeLibraries();
+            setupDropZones();
+            setupTimelinePeriods();
+            setupTabs();
+            setupControls();
+        }
+
+        init();
+    </script>
+</body>
+</html>
